@@ -1,15 +1,10 @@
 import chalk from "chalk";
 import ora from "ora";
 
-import {
-  type InstallerOptions,
-  type PkgInstallerMap,
-} from "~/installers/index.js";
+import { type InstallerOptions } from "~/installers/index.js";
 import { logger } from "~/utils/logger.js";
 
-type InstallPackagesOptions = InstallerOptions & {
-  packages: PkgInstallerMap;
-};
+type InstallPackagesOptions = InstallerOptions;
 // This runs the installer for all the packages that the user has selected
 export const installPackages = (options: InstallPackagesOptions) => {
   const { packages } = options;

@@ -39,7 +39,7 @@ export const logNextSteps = async ({
     logger.info("  Start up a database, if needed using './start-database.sh'");
   }
 
-  if (packages?.prisma.inUse || packages?.drizzle.inUse) {
+  if (packages.prisma.inUse || packages.drizzle.inUse) {
     if (["npm", "bun"].includes(pkgManager)) {
       logger.info(`  ${pkgManager} run db:push`);
     } else {
@@ -47,9 +47,9 @@ export const logNextSteps = async ({
     }
   }
 
-  if (packages?.nextAuth.inUse) {
+  if (packages.nextAuth.inUse) {
     logger.info(
-      `  Fill in your .env with necessary values. See https://create.t3.gg/en/usage/first-steps for more info.`
+      `  Fill in your .env with necessary values. See https://own-app.oimmi.com/usage/first-steps for more info.`
     );
   }
 

@@ -2,6 +2,26 @@
  * This maps the necessary packages to a version.
  * This improves performance significantly over fetching it from the npm registry.
  */
+interface DependencyVersionMapType {
+  deps?: Record<string, string>;
+  devDeps?: Record<string, string>;
+}
+export type GetAvailablePackages<T extends DependencyVersionMapType> =
+  | keyof T["deps"]
+  | keyof T["devDeps"];
+
+export const shadcnDependencyVersionMap = {
+  deps: {
+    "tailwind-merge": "^2.5.2",
+    "class-variance-authority": "^0.7.0",
+    "lucide-react": "^0.461.0",
+    clsx: "^2.1.1",
+  },
+  devDeps: {
+    "tailwindcss-animate": "^1.0.7",
+  },
+} as const satisfies DependencyVersionMapType;
+
 export const dependencyVersionMap = {
   // NextAuth.js
   "next-auth": "5.0.0-beta.25",
@@ -27,6 +47,10 @@ export const dependencyVersionMap = {
   postcss: "^8.4.39",
   prettier: "^3.3.2",
   "prettier-plugin-tailwindcss": "^0.6.5",
+  "postcss-nesting": "^13.0.1",
+  // shadcn
+  ...shadcnDependencyVersionMap.deps,
+  ...shadcnDependencyVersionMap.devDeps,
 
   // tRPC
   "@trpc/client": "^11.0.0-rc.446",

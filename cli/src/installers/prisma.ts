@@ -33,7 +33,7 @@ export const prismaInstaller: Installer = ({
   const schemaSrc = path.join(
     extrasDir,
     "prisma/schema",
-    `${packages?.nextAuth.inUse ? "with-auth" : "base"}${
+    `${packages.nextAuth.inUse ? "with-auth" : "base"}${
       databaseProvider === "planetscale" ? "-planetscale" : ""
     }.prisma`
   );

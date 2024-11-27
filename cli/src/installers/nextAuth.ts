@@ -7,8 +7,8 @@ import { type Installer } from "~/installers/index.js";
 import { addPackageDependency } from "~/utils/addPackageDependency.js";
 
 export const nextAuthInstaller: Installer = ({ projectDir, packages }) => {
-  const usingPrisma = packages?.prisma.inUse;
-  const usingDrizzle = packages?.drizzle.inUse;
+  const usingPrisma = packages.prisma.inUse;
+  const usingDrizzle = packages.drizzle.inUse;
 
   const deps: AvailableDependencies[] = ["next-auth"];
   if (usingPrisma) deps.push("@auth/prisma-adapter");

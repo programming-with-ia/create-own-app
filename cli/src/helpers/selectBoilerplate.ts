@@ -14,7 +14,7 @@ export const selectAppFile = ({
 }: SelectBoilerplateProps) => {
   const appFileDir = path.join(PKG_ROOT, "template/extras/src/pages/_app");
 
-  const usingTw = packages.tailwind.inUse;
+  const usingTw = packages.tailwind.inUse || packages.shadcn.inUse;
   const usingTRPC = packages.trpc.inUse;
   const usingNextAuth = packages.nextAuth.inUse;
 
@@ -47,7 +47,7 @@ export const selectLayoutFile = ({
 }: SelectBoilerplateProps) => {
   const layoutFileDir = path.join(PKG_ROOT, "template/extras/src/app/layout");
 
-  const usingTw = packages.tailwind.inUse;
+  const usingTw = packages.tailwind.inUse || packages.shadcn.inUse;
   const usingTRPC = packages.trpc.inUse;
   let layoutFile = "base.tsx";
   if (usingTRPC && usingTw) {
@@ -71,7 +71,7 @@ export const selectIndexFile = ({
   const indexFileDir = path.join(PKG_ROOT, "template/extras/src/pages/index");
 
   const usingTRPC = packages.trpc.inUse;
-  const usingTw = packages.tailwind.inUse;
+  const usingTw = packages.tailwind.inUse || packages.shadcn.inUse;
   const usingAuth = packages.nextAuth.inUse;
 
   let indexFile = "base.tsx";
@@ -100,7 +100,7 @@ export const selectPageFile = ({
   const indexFileDir = path.join(PKG_ROOT, "template/extras/src/app/page");
 
   const usingTRPC = packages.trpc.inUse;
-  const usingTw = packages.tailwind.inUse;
+  const usingTw = packages.tailwind.inUse || packages.shadcn.inUse;
   const usingAuth = packages.nextAuth.inUse;
 
   let indexFile = "base.tsx";

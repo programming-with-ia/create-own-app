@@ -14,15 +14,16 @@ import { getUserPkgManager } from "~/utils/getUserPkgManager.js";
 import { logger } from "~/utils/logger.js";
 import { parseNameAndPath } from "~/utils/parseNameAndPath.js";
 import { renderTitle } from "~/utils/renderTitle.js";
+import { IMPORTALIAS } from "./consts.js";
 import { installDependencies } from "./helpers/installDependencies.js";
-import { getVersion } from "./utils/getT3Version.js";
+import { getVersion } from "./utils/getVersion.js";
 import {
   getNpmVersion,
   renderVersionWarning,
 } from "./utils/renderVersionWarning.js";
 
-type CT3APackageJSON = PackageJson & {
-  ct3aMetadata?: {
+type ownPackageJSON = PackageJson & {
+  ownMetadata?: {
     initVersion: string;
   };
 };
@@ -58,11 +59,11 @@ const main = async () => {
   });
 
   // Write name to package.json
-  const pkgJson = fs.readJSONSync(
+  const pkgJson: ownPackageJSON = fs.readJSONSync(
     path.join(projectDir, "package.json")
-  ) as CT3APackageJSON;
+  ) as ownPackageJSON;
   pkgJson.name = scopedAppName;
-  pkgJson.ct3aMetadata = { initVersion: getVersion() };
+  pkgJson.ownMetadata = { initVersion: getVersion() };
 
   // ? Bun doesn't support this field (yet)
   if (pkgManager !== "bun") {
@@ -77,7 +78,7 @@ const main = async () => {
   });
 
   // update import alias in any generated files if not using the default
-  if (importAlias !== "~/") {
+  if (importAlias !== IMPORTALIAS) {
     setImportAlias(projectDir, importAlias);
   }
 

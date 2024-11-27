@@ -14,6 +14,7 @@ import {
   type DatabaseProvider,
   type PkgInstallerMap,
 } from "~/installers/index.js";
+import { stylingInstaller } from "~/installers/styling.js";
 import { getUserPkgManager } from "~/utils/getUserPkgManager.js";
 
 interface CreateProjectOptions {
@@ -76,7 +77,8 @@ export const createProject = async ({
   }
 
   // If no tailwind, select use css modules
-  if (!packages.tailwind.inUse) {
+  if (!packages.tailwind.inUse && !packages.shadcn.inUse) {
+    // stylingInstaller({type: 'none'})
     const indexModuleCss = path.join(
       PKG_ROOT,
       "template/extras/src/index.module.css"

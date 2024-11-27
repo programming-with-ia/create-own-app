@@ -4,8 +4,10 @@ const validationRegExp =
   /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
 
 //Validate a string against allowed package.json names
-export const validateAppName = (rawInput: string) => {
+export const isValidateAppName = (rawInput: string): boolean => {
   const input = removeTrailingSlash(rawInput);
+  if (input === ".") return true;
+
   const paths = input.split("/");
 
   // If the first part is a @, it's a scoped package
@@ -16,9 +18,19 @@ export const validateAppName = (rawInput: string) => {
     appName = paths.slice(indexOfDelimiter).join("/");
   }
 
-  if (input === "." || validationRegExp.test(appName ?? "")) {
-    return;
-  } else {
-    return "App name must consist of only lowercase alphanumeric characters, '-', and '_'";
-  }
+  return validationRegExp.test(appName ?? "");
 };
+
+export const validateAppName = (rawInput: string) =>
+  isValidateAppName(rawInput)
+    ? undefined
+    : "App name must consist of only lowercase alphanumeric characters, '-', and '_'";
+
+// export const validateAppName_ = (rawInput: string) => {
+
+//   if (isValidateAppName(rawInput)) {
+//     return;
+//   } else {
+//     return ;
+//   }
+// };

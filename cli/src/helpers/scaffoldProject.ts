@@ -14,7 +14,7 @@ export const scaffoldProject = async ({
   projectDir,
   pkgManager,
   noInstall,
-}: InstallerOptions) => {
+}: Omit<InstallerOptions, "packages">) => {
   const srcDir = path.join(PKG_ROOT, "template/base");
 
   if (!noInstall) {
@@ -53,29 +53,29 @@ export const scaffoldProject = async ({
         ],
         initialValue: "abort",
       });
-      if (overwriteDir === "abort") {
+
+      if (p.isCancel(overwriteDir) || overwriteDir === "abort") {
         spinner.fail("Aborting installation...");
         process.exit(1);
       }
 
-      const overwriteAction =
-        overwriteDir === "clear"
-          ? "clear the directory"
-          : "overwrite conflicting files";
-
       const confirmOverwriteDir = await p.confirm({
-        message: `Are you sure you want to ${overwriteAction}?`,
+        message: `Are you sure you want to ${
+          overwriteDir === "clear"
+            ? "clear the directory"
+            : "overwrite conflicting files"
+        }?`,
         initialValue: false,
       });
 
-      if (!confirmOverwriteDir) {
+      if (p.isCancel(confirmOverwriteDir) || !confirmOverwriteDir) {
         spinner.fail("Aborting installation...");
         process.exit(1);
       }
 
       if (overwriteDir === "clear") {
         spinner.info(
-          `Emptying ${chalk.cyan.bold(projectName)} and creating t3 app..\n`
+          `Emptying ${chalk.cyan.bold(projectName)} and creating own-app..\n`
         );
         fs.emptyDirSync(projectDir);
       }

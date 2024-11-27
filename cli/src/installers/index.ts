@@ -1,7 +1,7 @@
 import { envVariablesInstaller } from "~/installers/envVars.js";
 import { nextAuthInstaller } from "~/installers/nextAuth.js";
 import { prismaInstaller } from "~/installers/prisma.js";
-import { tailwindInstaller } from "~/installers/tailwind.js";
+import { shadcnInstaller, tailwindInstaller } from "~/installers/styling.js";
 import { trpcInstaller } from "~/installers/trpc.js";
 import { type PackageManager } from "~/utils/getUserPkgManager.js";
 import { dbContainerInstaller } from "./dbContainer.js";
@@ -15,6 +15,7 @@ export const availablePackages = [
   "prisma",
   "drizzle",
   "tailwind",
+  "shadcn",
   "trpc",
   "envVariables",
   "eslint",
@@ -28,20 +29,26 @@ export const databaseProviders = [
   "sqlite",
   "planetscale",
 ] as const;
+
+// type InstallerPackages = {
+//   styling: "tailwind" | "shadcn" | "none";
+// };
+
 export type DatabaseProvider = (typeof databaseProviders)[number];
+export type StylingType = "tailwind" | "shadcn" | "none"; // none == without tailwind
 
 export interface InstallerOptions {
   projectDir: string;
   pkgManager: PackageManager;
   noInstall: boolean;
-  packages?: PkgInstallerMap;
-  appRouter?: boolean;
+  packages: PkgInstallerMap;
+  appRouter: boolean;
   projectName: string;
   scopedAppName: string;
   databaseProvider: DatabaseProvider;
 }
 
-export type Installer = (opts: InstallerOptions) => void;
+export type Installer<T = {}> = (opts: InstallerOptions & T) => void;
 
 export type PkgInstallerMap = {
   [pkg in AvailablePackages]: {
@@ -69,6 +76,10 @@ export const buildPkgInstallerMap = (
   tailwind: {
     inUse: packages.includes("tailwind"),
     installer: tailwindInstaller,
+  },
+  shadcn: {
+    inUse: packages.includes("shadcn"),
+    installer: shadcnInstaller,
   },
   trpc: {
     inUse: packages.includes("trpc"),

@@ -22,9 +22,9 @@ export const trpcInstaller: Installer = ({
     devMode: false,
   });
 
-  const usingAuth = packages?.nextAuth.inUse;
-  const usingPrisma = packages?.prisma.inUse;
-  const usingDrizzle = packages?.drizzle.inUse;
+  const usingAuth = packages.nextAuth.inUse;
+  const usingPrisma = packages.prisma.inUse;
+  const usingDrizzle = packages.drizzle.inUse;
   const usingDb = usingPrisma || usingDrizzle;
 
   const extrasDir = path.join(PKG_ROOT, "template/extras");
@@ -106,7 +106,7 @@ export const trpcInstaller: Installer = ({
         path.join(
           extrasDir,
           "src/app/_components",
-          packages?.tailwind.inUse ? "post-tw.tsx" : "post.tsx"
+          packages.tailwind.inUse ? "post-tw.tsx" : "post.tsx"
         ),
         path.join(projectDir, "src/app/_components/post.tsx"),
       ],

@@ -52,7 +52,7 @@ export const drizzleInstaller: Installer = ({
   const schemaSrc = path.join(
     extrasDir,
     "src/server/db/schema-drizzle",
-    packages?.nextAuth.inUse
+    packages.nextAuth.inUse
       ? `with-auth-${databaseProvider}.ts`
       : `base-${databaseProvider}.ts`
   );
