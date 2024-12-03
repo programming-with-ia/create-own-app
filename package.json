@@ -1,22 +1,17 @@
 {
-  "name": "@ct3a/root",
+  "name": "@own/root",
   "version": "0.0.0",
   "description": "Quickest way to start a new web app with full stack typesafety",
-  "author": "Shoubhit Dash <shoubhit2005@gmail.com> (https://nexxel.dev)",
-  "maintainers": [
-    "Julius Marminge <julius0216@outlook.com> (https://jumr.dev)"
-  ],
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/t3-oss/create-t3-app.git"
+    "url": "https://github.com/programming-with-ia/create-own-app.git"
   },
   "keywords": [
-    "create-t3-app",
+    "create-own-app",
     "init.tips",
     "next.js",
-    "t3-stack",
     "tailwind",
     "tRPC",
     "typescript"

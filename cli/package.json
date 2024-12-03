@@ -1,11 +1,11 @@
 {
-  "name": "create-own-test-app",
-  "version": "1.0.0",
+  "name": "create-own-app",
+  "version": "1.0.2",
   "description": "Create web application with the `create-own-app`",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/programming-with-ia/createownapp.git",
+    "url": "https://github.com/programming-with-ia/create-own-app.git",
     "directory": "cli"
   },
   "keywords": [
