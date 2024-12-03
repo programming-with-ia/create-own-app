@@ -13,7 +13,6 @@ import { getUserPkgManager } from "~/utils/getUserPkgManager.js";
 import { getVersion } from "~/utils/getVersion.js";
 import { IsTTYError } from "~/utils/isTTYError.js";
 import { logger } from "~/utils/logger.js";
-import { mergeObjects } from "~/utils/merge.js";
 import { validateAppName } from "~/utils/validateAppName.js";
 import { validateImportAlias } from "~/utils/validateImportAlias.js";
 
@@ -49,12 +48,11 @@ const defaultOptions = {
     noInstall: false,
     default: false,
     importAlias: IMPORTALIAS,
-    appRouter: false,
+    appRouter: true,
     dbProvider: "sqlite",
-    // doesn't matter
     tailwind: true,
     shadcn: false,
-    trpc: true,
+    trpc: false,
     prisma: true,
     drizzle: false,
     nextAuth: true,
@@ -68,8 +66,7 @@ export const runCli = async (): Promise<CliResults> => {
   result.packages = [];
 
   const isLogicalTrue = (value: string) => !!value && value !== "false";
-  const isUndefined = (value: unknown): value is undefined =>
-    value == undefined;
+  const isUndefined = (value: unknown): value is undefined => value == undefined;
   const setFlags = (
     noGit: boolean | undefined,
     noInstall: boolean | undefined,
@@ -137,10 +134,7 @@ export const runCli = async (): Promise<CliResults> => {
     .option("--appRouter [boolean]", "Use Next.js app router", isLogicalTrue)
     /** END CI-FLAGS */
     .version(getVersion(), "-v, --version", "Display the version number")
-    .addHelpText(
-      "afterAll",
-      `\n The own stack was inspired by ${chalk.hex("#E8DCFF")}\n`
-    )
+    .addHelpText("afterAll", `\n The own stack was inspired by ${chalk.hex("#E8DCFF")}\n`)
     .parse(process.argv);
   /* #endregion */
 
@@ -171,34 +165,32 @@ export const runCli = async (): Promise<CliResults> => {
     process.exit(0);
   }
   // DB-Provider
-  if (
-    programOpts.dbProvider &&
-    !databaseProviders.includes(programOpts.dbProvider)
-  ) {
-    logger.warn(
-      `Incompatible database provided. Use: ${databaseProviders.join(", ")}. Exiting.`
-    );
+  if (programOpts.dbProvider && !databaseProviders.includes(programOpts.dbProvider)) {
+    logger.warn(`Incompatible database provided. Use: ${databaseProviders.join(", ")}. Exiting.`);
     process.exit(0);
   }
   result.appName = cliProvidedName ?? result.appName;
-  result.databaseProvider =
-    programOpts.dbProvider ?? defaultOptions.databaseProvider;
+  result.databaseProvider = programOpts.dbProvider ?? defaultOptions.databaseProvider;
+
+  const defaultResolve = <C, D>(option: C, defaultFlag: D) =>
+    option ?? (programOpts.default ? defaultFlag : undefined);
 
   addPackages(
-    programOpts.shadcn,
-    programOpts.tailwind,
-    programOpts.trpc,
-    programOpts.nextAuth,
-    programOpts.prisma,
-    programOpts.drizzle
+    defaultResolve(programOpts.shadcn, defaultOptions.flags.shadcn),
+    defaultResolve(programOpts.tailwind, defaultOptions.flags.tailwind),
+    defaultResolve(programOpts.trpc, defaultOptions.flags.trpc),
+    defaultResolve(programOpts.nextAuth, defaultOptions.flags.nextAuth),
+    defaultResolve(programOpts.prisma, defaultOptions.flags.prisma),
+    defaultResolve(programOpts.drizzle, defaultOptions.flags.drizzle)
   );
+
   setFlags(
-    programOpts.noGit,
-    programOpts.noInstall,
-    programOpts.appRouter,
-    programOpts.importAlias
+    defaultResolve(programOpts.noGit, defaultOptions.flags.noGit),
+    defaultResolve(programOpts.noInstall, defaultOptions.flags.noInstall),
+    defaultResolve(programOpts.appRouter, defaultOptions.flags.appRouter),
+    defaultResolve(programOpts.importAlias, defaultOptions.flags.importAlias)
   );
-  result.flags = mergeObjects(defaultOptions.flags, programOpts);
+
   if (programOpts.default) {
     return result;
   }
@@ -249,13 +241,12 @@ export const runCli = async (): Promise<CliResults> => {
       trpc: () => {
         return p.confirm({
           message: "Would you like to use tRPC?",
-          initialValue: false,
+          initialValue: defaultOptions.flags.trpc,
         });
       },
     }),
     // Authentication
-    ...(programOpts.nextAuth ==
-      undefined /*  && programOpts.clerk == undefined */ && {
+    ...(programOpts.nextAuth == undefined /*  && programOpts.clerk == undefined */ && {
       authentication: () => {
         return p.select({
           message: "What authentication provider would you like to use?",
@@ -284,12 +275,10 @@ export const runCli = async (): Promise<CliResults> => {
       },
     }),
     // databaseProvider
-    ...(isUndefined(programOpts.prisma ?? programOpts.drizzle) &&
-    !programOpts.dbProvider
+    ...(isUndefined(programOpts.prisma ?? programOpts.drizzle) && !programOpts.dbProvider
       ? {
           databaseProvider: ({ results }) => {
-            if (isUndefined(results.database) || results.database === "none")
-              return;
+            if (isUndefined(results.database) || results.database === "none") return;
             return p.select({
               message: "What database provider would you like to use?",
               options: [
@@ -298,7 +287,7 @@ export const runCli = async (): Promise<CliResults> => {
                 { value: "postgres", label: "PostgreSQL" },
                 { value: "planetscale", label: "PlanetScale" },
               ],
-              initialValue: "sqlite" as DatabaseProvider,
+              initialValue: defaultOptions.flags.dbProvider as DatabaseProvider,
             });
           },
         }
@@ -308,17 +297,7 @@ export const runCli = async (): Promise<CliResults> => {
       appRouter: () => {
         return p.confirm({
           message: "Would you like to use Next.js App Router?",
-          initialValue: true,
-        });
-      },
-    }),
-    // Git
-    ...(isUndefined(programOpts.noGit) && {
-      git: () => {
-        return p.confirm({
-          message:
-            "Should we initialize a Git repository and stage the changes?",
-          initialValue: !defaultOptions.flags.noGit,
+          initialValue: defaultOptions.flags.appRouter,
         });
       },
     }),
@@ -333,13 +312,21 @@ export const runCli = async (): Promise<CliResults> => {
         });
       },
     }),
+    // Git
+    ...(isUndefined(programOpts.noGit) && {
+      git: () => {
+        return p.confirm({
+          message: "Should we initialize a Git repository and stage the changes?",
+          initialValue: !defaultOptions.flags.noGit,
+        });
+      },
+    }),
     // install
     ...(isUndefined(programOpts.noInstall) && {
       install: () => {
         return p.confirm({
           message:
-            `Should we run '${pkgManager}` +
-            (pkgManager === "yarn" ? `'?` : ` install' for you?`),
+            `Should we run '${pkgManager}` + (pkgManager === "yarn" ? `'?` : ` install' for you?`),
           initialValue: !defaultOptions.flags.noInstall,
         });
       },
@@ -366,8 +353,7 @@ export const runCli = async (): Promise<CliResults> => {
     });
 
     result.appName = project.name ?? result.appName;
-    result.databaseProvider =
-      project.databaseProvider || result.databaseProvider;
+    result.databaseProvider = project.databaseProvider || result.databaseProvider;
 
     addPackages(
       project.styling == "shadcn",
@@ -378,21 +364,14 @@ export const runCli = async (): Promise<CliResults> => {
       project.database === "drizzle"
     );
 
-    setFlags(
-      !project.git,
-      !project.install,
-      project.appRouter,
-      project.importAlias
-    );
+    setFlags(!project.git, !project.install, project.appRouter, project.importAlias);
 
     return result;
   } catch (err) {
     // If the user is not calling create-own-app from an interactive terminal, inquirer will throw an IsTTYError
     // If this happens, we catch the error, tell the user what has happened, and then continue to run the program with a default own app
     if (err instanceof IsTTYError) {
-      logger.warn(
-        `${CREATE_OWN_APP} needs an interactive terminal to provide options`
-      );
+      logger.warn(`${CREATE_OWN_APP} needs an interactive terminal to provide options`);
 
       const shouldContinue = await p.confirm({
         message: `Continue scaffolding a default OWN app?`,

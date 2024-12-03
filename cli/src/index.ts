@@ -17,10 +17,7 @@ import { renderTitle } from "~/utils/renderTitle.js";
 import { IMPORTALIAS } from "./consts.js";
 import { installDependencies } from "./helpers/installDependencies.js";
 import { getVersion } from "./utils/getVersion.js";
-import {
-  getNpmVersion,
-  renderVersionWarning,
-} from "./utils/renderVersionWarning.js";
+import { getNpmVersion, renderVersionWarning } from "./utils/renderVersionWarning.js";
 
 type ownPackageJSON = PackageJson & {
   ownMetadata?: {
@@ -42,6 +39,10 @@ const main = async () => {
     flags: { noGit, noInstall, importAlias, appRouter },
     databaseProvider,
   } = await runCli();
+
+  logger.info(
+    `Packages: ${packages} \ndatabaseProvider: ${databaseProvider} \nFlags: ${{ noGit, noInstall, importAlias, appRouter }}`
+  );
 
   const usePackages = buildPkgInstallerMap(packages, databaseProvider);
 
@@ -107,9 +108,7 @@ main().catch((err) => {
   if (err instanceof Error) {
     logger.error(err);
   } else {
-    logger.error(
-      "An unknown error has occurred. Please open an issue on github with the below:"
-    );
+    logger.error("An unknown error has occurred. Please open an issue on github with the below:");
     console.log(err);
   }
   process.exit(1);

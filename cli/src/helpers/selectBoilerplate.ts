@@ -4,14 +4,9 @@ import fs from "fs-extra";
 import { PKG_ROOT } from "~/consts.js";
 import { type InstallerOptions } from "~/installers/index.js";
 
-type SelectBoilerplateProps = Required<
-  Pick<InstallerOptions, "packages" | "projectDir">
->;
+type SelectBoilerplateProps = Required<Pick<InstallerOptions, "packages" | "projectDir">>;
 // This generates the _app.tsx file that is used to render the app
-export const selectAppFile = ({
-  projectDir,
-  packages,
-}: SelectBoilerplateProps) => {
+export const selectAppFile = ({ projectDir, packages }: SelectBoilerplateProps) => {
   const appFileDir = path.join(PKG_ROOT, "template/extras/src/pages/_app");
 
   const usingTw = packages.tailwind.inUse || packages.shadcn.inUse;
@@ -41,10 +36,7 @@ export const selectAppFile = ({
 };
 
 // Similar to _app, but for app router
-export const selectLayoutFile = ({
-  projectDir,
-  packages,
-}: SelectBoilerplateProps) => {
+export const selectLayoutFile = ({ projectDir, packages }: SelectBoilerplateProps) => {
   const layoutFileDir = path.join(PKG_ROOT, "template/extras/src/app/layout");
 
   const usingTw = packages.tailwind.inUse || packages.shadcn.inUse;
@@ -64,10 +56,7 @@ export const selectLayoutFile = ({
 };
 
 // This selects the proper index.tsx to be used that showcases the chosen tech
-export const selectIndexFile = ({
-  projectDir,
-  packages,
-}: SelectBoilerplateProps) => {
+export const selectIndexFile = ({ projectDir, packages }: SelectBoilerplateProps) => {
   const indexFileDir = path.join(PKG_ROOT, "template/extras/src/pages/index");
 
   const usingTRPC = packages.trpc.inUse;
@@ -93,10 +82,7 @@ export const selectIndexFile = ({
 };
 
 // Similar to index, but for app router
-export const selectPageFile = ({
-  projectDir,
-  packages,
-}: SelectBoilerplateProps) => {
+export const selectPageFile = ({ projectDir, packages }: SelectBoilerplateProps) => {
   const indexFileDir = path.join(PKG_ROOT, "template/extras/src/app/page");
 
   const usingTRPC = packages.trpc.inUse;

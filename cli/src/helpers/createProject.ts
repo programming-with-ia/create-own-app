@@ -10,10 +10,7 @@ import {
   selectLayoutFile,
   selectPageFile,
 } from "~/helpers/selectBoilerplate.js";
-import {
-  type DatabaseProvider,
-  type PkgInstallerMap,
-} from "~/installers/index.js";
+import { type DatabaseProvider, type PkgInstallerMap } from "~/installers/index.js";
 import { stylingInstaller } from "~/installers/styling.js";
 import { getUserPkgManager } from "~/utils/getUserPkgManager.js";
 
@@ -79,10 +76,7 @@ export const createProject = async ({
   // If no tailwind, select use css modules
   if (!packages.tailwind.inUse && !packages.shadcn.inUse) {
     // stylingInstaller({type: 'none'})
-    const indexModuleCss = path.join(
-      PKG_ROOT,
-      "template/extras/src/index.module.css"
-    );
+    const indexModuleCss = path.join(PKG_ROOT, "template/extras/src/index.module.css");
     const indexModuleCssDest = path.join(
       projectDir,
       "src",
